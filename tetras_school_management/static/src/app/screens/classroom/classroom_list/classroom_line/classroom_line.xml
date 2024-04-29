@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+     <t t-name="tetras_school_management.ClassroomLine">
+         <tr t-on-click="props.onClick" class="line-component">
+             <td class="classroom-list-name"><t t-esc="props.classroom.name"/></td>
+         </tr>
+    </t>
+</templates>

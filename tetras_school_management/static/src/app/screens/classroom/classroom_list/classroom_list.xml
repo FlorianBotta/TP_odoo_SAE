@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+     <t t-name="tetras_school_management.ClassroomListScreen">
+         <div>
+             <div class="classroom-list">
+             <h1>Classroom List</h1>
+                 <div class="form-control input-container d-flex align-items-center py-1 bg-view">
+                     <i class="fa fa-search undefined"></i>
+                     <input placeholder="Search classroom by name" class="border-0 mx-2"
+                            t-on-keyup.stop="SearchClassroomName"/>
+                 </div>
+                 <table class="list-content">
+                 <thead>
+                     <tr>
+                         <td class="name">Name</td>
+                     </tr>
+                 </thead>
+                     <tbody>
+                     <t t-foreach="state.filterClassrooms" t-as="classroom" t-key="classroom.id">
+                         <ClassroomLine classroom="classroom"
+                                        classroomId="classroom.id"
+                                        onClick="() => this.onClassroomClick(classroom)"/>
+                     </t>
+                 </tbody>
+             </table>
+         </div>
+         </div>
+    </t>
+</templates>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+     <t t-name="tetras_school_management.ControlEditScreen">
+         <div class="control-edit-form">
+                <div t-on-click="() => this.tetras.showScreen('ControlFormScreen', {control:this.tetras.getControl(this.props.control_id)})"
+                     class="cursor-pointer btn btn-primary mt-1">Back</div><br/>
+             <table class="list-student" t-if="this.filterControlStudent.length != 0">
+                 <thead>
+                     <tr>
+                         <th>Name</th>
+                         <th>Grade</th>
+                     </tr>
+                    </thead>
+                 <tbody>
+                     <t t-foreach="this.filterControlStudent" t-as="student" t-key="student.id">
+                         <tr>
+                             <td><input t-model="student.name" t-att-readonly="1"/></td>
+                             <td><input t-model="student.grade" type="number"/></td>
+                         </tr>
+                     </t>
+                 </tbody>
+             </table>
+             <div t-if="this.filterControlStudent.length == 0" class="text-center alert-danger">No student found for this classroom and control</div>
+             <div t-on-click="SaveControlData" class="save-button cursor-pointer btn btn-primary mt-1">Save</div>
+         </div>
+     </t>
+</templates>

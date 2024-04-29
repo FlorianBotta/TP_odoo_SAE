@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="tetras_school_management.ControlListScreen">
+        <div>
+            <div class="control-list">
+             <h1>Control List</h1>
+                <div class="form-control input-container d-flex align-items-center py-1 bg-view">
+                     <i class="fa fa-search undefined"></i>
+                     <input placeholder="Search controls by name" class="border-0 mx-2"
+                            t-on-keyup.stop="SearchControlName"/>
+                 </div>
+                <table class="list-content">
+                 <thead>
+                     <tr>
+                         <td class="name">Name</td>
+                     </tr>
+                 </thead>
+                    <tbody>
+                     <t t-foreach="state.filterControls" t-as="control" t-key="control.id">
+                         <ControlLine control="control"
+                                      controlId="control.id"
+                                      onClick="() => this.onControlClick(control)"/>
+                     </t>
+                 </tbody>
+             </table>
+         </div>
+     </div>
+    </t>
+</templates>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="tetras_school_management.Navbar">
+        <div class="menuitem">
+            <div class="navbar-button category-button btn btn-light d-flex flex-column align-items-center justify-content-center category-item p-1 h-100 main-button cursor-pointer name"
+                 t-on-click="() => tetras.showScreen('StudentListScreen')">
+                <i class="fa fa-address-card"></i>
+                Students</div>
+            <div class="navbar-button main-button cursor-pointer name category-button btn btn-light d-flex flex-column align-items-center justify-content-center category-item p-1 h-100"
+                 t-on-click="() => tetras.showScreen('TeacherListScreen')">
+                <i class="fa fa-graduation-cap"></i>
+                Teachers</div>
+            <div class="navbar-button main-button cursor-pointer name category-button btn btn-light d-flex flex-column align-items-center justify-content-center category-item p-1 h-100"
+                 t-on-click="() => tetras.showScreen('ClassroomListScreen')">
+                <i class="fa fa-users"></i>
+                Classrooms</div>
+            <div class="navbar-button main-button cursor-pointer name category-button btn btn-light d-flex flex-column align-items-center justify-content-center category-item p-1 h-100"
+                 t-on-click="() => tetras.showScreen('ControlListScreen')">
+                <i class="fa fa-dashboard"></i>
+                Control</div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+     <t t-name="tetras_school_management.ClassroomFormScreen">
+         <div class="classroom-form">
+             <div t-on-click="() => this.tetras.showScreen('ClassroomListScreen')" class="cursor-pointer btn btn-primary">Back</div><br/>
+             <div t-on-click="() => state.isOpen = !state.isOpen" class="cursor-pointer btn btn-primary">Edit</div>
+             <div t-on-click="SaveClassroomData" class="save-button cursor-pointer btn btn-primary">Save</div>
+             <span class="name"><input t-model="props.classroom.name" t-att-readonly="state.isOpen"/></span><br/>
+             <table class="grade-table">
+                 <tr>
+                     <th>Name</th>
+                     <th>Email</th>
+                     <th>Birthday</th>
+                 </tr>
+                 <t t-foreach="props.classroom.students" t-as="student" t-key="student.id">
+                     <tr>
+                         <td><input t-model="student.name" t-att-readonly="state.isOpen"/></td>
+                         <td><input t-model="student.email" t-att-readonly="state.isOpen"/></td>
+                         <td><input t-model="student.birth_day" t-att-readonly="state.isOpen"/></td>
+                     </tr>
+                 </t>
+             </table>
+         </div>
+    </t>
+</templates>

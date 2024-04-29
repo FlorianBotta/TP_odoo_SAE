@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_tetras_classroom_form" model="ir.ui.view">
+        <field name="name">tetras.classroom.form</field>
+        <field name="model">tetras.classroom</field>
+        <field name="arch" type="xml">
+            <form string="Classroom">
+                <sheet>
+                    <h1>
+                        <div>
+                            <field name="name"/>
+                        </div>
+                    </h1>
+                    <group>
+                        <field name="student_ids" nolabel="1" colspan="2">
+                            <tree>
+                                <field name="name"/>
+                                <field name="email"/>
+                                <field name="birth_day"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="tetras_classroom_action" model="ir.actions.act_window">
+        <field name="name">Classrooms</field>
+        <field name="res_model">tetras.classroom</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>
