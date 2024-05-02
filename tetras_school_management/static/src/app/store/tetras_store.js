@@ -29,7 +29,6 @@ export class TetrasStore extends Reactive {
 
     processClassroom() {
         for (let classroom of this.classrooms) {
-            console.log("classroom", classroom.students);
             classroom.students = this.students.filter(student => student.classroom_id[0] === classroom.id);
         }
     }
@@ -54,6 +53,7 @@ export class TetrasStore extends Reactive {
         this.classrooms = loadedData["tetras.classroom"];
         this.students_grade_ids = loadedData["tetras.student.grade"];
         this.controls = loadedData["tetras.control"];
+        this.trading_beer = loadedData["tetras.beer.trading"];
         this.processClassroom();
         this.processControl();
     }

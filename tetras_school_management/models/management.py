@@ -18,4 +18,6 @@ class TetrasManagement(models.Model):
                 fields=["grade", "student_id", "control_id"]),
             "tetras.control": self.env["tetras.control"].search_read(
                 fields=["name", "date", "classroom_id", "students_grade_ids", "average_grade", "min_grade", 'max_grade']),
+            "tetras.beer.trading": self.env["tetras.beer.trading"].search_read(
+                fields=["name", "data_beer"]),
         }

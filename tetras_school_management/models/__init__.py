@@ -5,4 +5,4 @@ from . import teacher
 from . import classroom
 from . import control
 from . import students_grade
-
+from . import beer_trading
