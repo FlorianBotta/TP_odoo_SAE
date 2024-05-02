@@ -18,6 +18,10 @@
                  t-on-click="() => tetras.showScreen('ControlListScreen')">
                 <i class="fa fa-dashboard"></i>
                 Control</div>
+            <div class="navbar-button main-button cursor-pointer name category-button btn btn-light d-flex flex-column align-items-center justify-content-center category-item p-1 h-100"
+                 t-on-click="() => tetras.showScreen('TradingBeerScreen')">
+                <i class="fa fa-beer"></i>
+                Trading Beer</div>
         </div>
     </t>
 </templates>

@@ -46,6 +46,9 @@
             'web/static/lib/owl/owl.js',
             'web/static/lib/owl/odoo_module.js',
 
+            # external libs
+            'tetras_school_management/static/src/library/*',
+
             # JS framework
             ('include', 'web._assets_core'),
             ('remove', 'web/static/src/core/errors/error_handlers.js'),
