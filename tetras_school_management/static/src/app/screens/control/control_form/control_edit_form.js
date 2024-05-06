@@ -23,7 +23,6 @@ export class ControlEditScreen extends Component {
 
     SaveControlData(ev) {
         for (let student of this.filterControlStudent) {
-            console.log("student", student)
             if (student.grade !== undefined) {
                 this.tetras.orm.call("tetras.student.grade", "create_student_grade", [{
                     "student_id": student.id,

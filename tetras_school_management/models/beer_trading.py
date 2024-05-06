@@ -12,68 +12,29 @@ class BeerTrading(models.Model):
 
     name = fields.Char(string='Name')
     data_beer = fields.Char(string='Data Beer')
+    # last_update = fields.Datetime(string='Last Update', default=datetime.now())
 
-    def _init_data_beer(self):
-        orders = self.env['pos.order'].search(["lines.product_id.categ_id.name", "=", "Bière"])
-        for order in orders:
-            for line in order.lines:
-                if "mont blanc" in line.product_id.name.lower():
-                    res_data = {
-                        'date_order': order.date_order.strftime('%Y-%m-%d %H:%M:%S'),
-                        "product": line.product_id.name,
-                        "qty": line.qty,
-                    }
+    def _cron_get_beer_trading_data(self):
+        # datas = [
+        #     {'date_order': '2024-05-02 11:54:12', 'product': 'Biere', 'qty': 2},
+        #     {'date_order': '2024-05-02 11:54:24', 'product': 'Biere', 'qty': 8},
+        #     {'date_order': '2024-05-02 11:54:32', 'product': 'Biere', 'qty': 8},
+        #     {'date_order': '2024-05-02 11:54:45', 'product': 'Biere', 'qty': 8},
+        #     {'date_order': '2024-05-02 11:54:59', 'product': 'Biere', 'qty': 8},
+        #     {'date_order': '2024-05-02 11:55:24', 'product': 'Biere', 'qty': 8},
+        #     {'date_order': '2024-05-02 12:00:24', 'product': 'Biere', 'qty': 1},
+        #     {'date_order': '2024-05-02 19:05:24', 'product': 'Biere', 'qty': 1},
+        #     {'date_order': '2024-06-02 00:54:45', 'product': 'Biere', 'qty': 8},
+        # ]
 
-    def outsite_openning_hours(self, row):
-        order_time = row['date_order'].time()
-
-        start_date_morning = datetime.combine(row['date_order'].date(),
-                                              datetime.strptime(f'{OPENING_HOURS[0][0]}:{OPENING_HOURS[0][1]}',
-                                                                '%H:%M').time())
-        end_date_morning = datetime.combine(row['date_order'].date(),
-                                            datetime.strptime(f'{OPENING_HOURS[1][0]}:{OPENING_HOURS[1][1]}',
-                                                              '%H:%M').time())
-        start_date_afternoon = datetime.combine(row['date_order'].date(),
-                                                datetime.strptime(f'{OPENING_HOURS[2][0]}:{OPENING_HOURS[2][1]}',
-                                                                  '%H:%M').time())
-        end_date_afternoon = datetime.combine((row['date_order']).date(), datetime.strptime('23:59', '%H:%M').time())
-
-        if (start_date_morning.time() <= order_time < end_date_morning.time()) or (
-                start_date_afternoon.time() <= order_time < end_date_afternoon.time()): return True
-        if order_time.hour == 0: return True
-
-        return False
-
-    def get_time_since(self, row):
-        if not self.outsite_openning_hours(row):
-            return False
-        date = row['date_order']
-        if date.hour < OPENING_HOURS[1][0] and date.hour != 0:
-            opening_time = datetime.combine(date, datetime.strptime(f'{OPENING_HOURS[0][0]}:{OPENING_HOURS[0][1]}',
-                                                                    '%H:%M').time())
-            return abs((date - opening_time).total_seconds() / 60)
-        opening_time = datetime.combine(date, datetime.strptime(f'{OPENING_HOURS[0][0]}:{OPENING_HOURS[0][1]}',
-                                                                '%H:%M').time()) + timedelta(hours=3)
-        return abs((date - opening_time).total_seconds() / 60)
-
-    def get_data(self):
-        datas = [
-            {'date_order': '2024-05-02 11:54:12', 'product': 'Biere', 'qty': 2},
-            {'date_order': '2024-05-02 11:54:24', 'product': 'Biere', 'qty': 8},
-            {'date_order': '2024-05-02 11:54:32', 'product': 'Biere', 'qty': 8},
-            {'date_order': '2024-05-02 11:54:45', 'product': 'Biere', 'qty': 8},
-            {'date_order': '2024-05-02 11:54:59', 'product': 'Biere', 'qty': 8},
-            {'date_order': '2024-05-02 11:55:24', 'product': 'Biere', 'qty': 8},
-            {'date_order': '2024-05-02 12:00:24', 'product': 'Biere', 'qty': 1},
-            {'date_order': '2024-05-02 19:05:24', 'product': 'Biere', 'qty': 1},
-            {'date_order': '2024-06-02 00:54:45', 'product': 'Biere', 'qty': 8},
-        ]
-
+        datas = self.get_datas_from_order()
+        if not datas:
+            return
         df = pd.DataFrame(datas)
 
         df['date_order'] = pd.to_datetime(df['date_order'])
 
-        df['time_since_opening'] = df.apply(self.get_time_since, axis=1)
+        df['time_since_opening'] = df.apply(get_time_since, axis=1)
 
         df['day'] = df['date_order'].dt.date
 
@@ -105,9 +66,60 @@ class BeerTrading(models.Model):
             beer_trading_id = self.env['tetras.beer.trading'].create({'name': 'Beer Trading'}).sudo()
             beer_trading_id.data_beer = result.values.tolist()
 
+    def get_datas_from_order(self):
+        beer_product_ids = self.env['product.product'].search([('categ_id.name', '=', 'Bière')])
+        order_ids = self.env['pos.order'].search([('state', '!=', 'draft')])
+        order_line_ids = self.env['pos.order.line'].search([('product_id', 'in', [beer_product.id for beer_product in beer_product_ids]), ('order_id', 'in', [order.id for order in order_ids])])
+        datas = []
+        for line in order_line_ids:
+            if "mont blanc" in line.product_id.name.lower():
+                order = line.order_id
+                datas.append({
+                    "date_order": order.date_order.strftime('%Y-%m-%d %H:%M:%S'),
+                    "product": line.product_id.name,
+                    "qty": line.qty,
+                })
+        return datas
+
 
 def calculate_price(nb_sold, time):
     expression = 5 - (2 * COEFF_BIERE) * nb_sold + COEFF_BIERE * time
     if expression < 3:
         return 3
     return min(expression, 7)
+
+
+def outsite_openning_hours(row):
+    order_time = row['date_order'].time()
+
+    start_date_morning = datetime.combine(row['date_order'].date(),
+                                          datetime.strptime(f'{OPENING_HOURS[0][0]}:{OPENING_HOURS[0][1]}',
+                                                            '%H:%M').time())
+    end_date_morning = datetime.combine(row['date_order'].date(),
+                                        datetime.strptime(f'{OPENING_HOURS[1][0]}:{OPENING_HOURS[1][1]}',
+                                                          '%H:%M').time())
+    start_date_afternoon = datetime.combine(row['date_order'].date(),
+                                            datetime.strptime(f'{OPENING_HOURS[2][0]}:{OPENING_HOURS[2][1]}',
+                                                              '%H:%M').time())
+    end_date_afternoon = datetime.combine((row['date_order']).date(), datetime.strptime('23:59', '%H:%M').time())
+
+    if (start_date_morning.time() <= order_time < end_date_morning.time()) or (
+            start_date_afternoon.time() <= order_time < end_date_afternoon.time()):
+        return True
+    if order_time.hour == 0:
+        return True
+
+    return False
+
+
+def get_time_since(row):
+    if not outsite_openning_hours(row):
+        return False
+    date = row['date_order']
+    if date.hour < OPENING_HOURS[1][0] and date.hour != 0:
+        opening_time = datetime.combine(date, datetime.strptime(f'{OPENING_HOURS[0][0]}:{OPENING_HOURS[0][1]}',
+                                                                '%H:%M').time())
+        return abs((date - opening_time).total_seconds() / 60)
+    opening_time = datetime.combine(date, datetime.strptime(f'{OPENING_HOURS[0][0]}:{OPENING_HOURS[0][1]}',
+                                                            '%H:%M').time()) + timedelta(hours=3)
+    return abs((date - opening_time).total_seconds() / 60)

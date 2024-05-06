@@ -20,6 +20,15 @@ export class TetrasStore extends Reactive {
         await this.load_server_data();
 
         this.showScreen("StudentListScreen");
+
+        setInterval(async () => {
+        try {
+            await this.load_server_data();
+            console.log("Données de la bière actualisées avec succès !");
+        } catch (error) {
+            console.error("Erreur lors de l'actualisation des données de la bière :", error);
+        }
+    }, 5 * 60 * 1000);
     }
 
     async load_server_data() {
