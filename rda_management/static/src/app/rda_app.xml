@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="rda_management.Chrome">
+        <div class="rda dvh-100 d-flex flex-column">
+            <Navbar/>
+            <div class="rda-content flex-grow-1 overflow-auto">
+                <t t-component="rda.mainScreen.component"
+                    t-props="rda.mainScreen.props"/>
+            </div>
+        </div>
+    </t>
+
+</templates>

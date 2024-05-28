@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates id="template" xml:space="preserve">
+    <t t-name="rda_management.TradingBeerScreen">
+        <div class="trading-beer">
+            <h1>Trading Beer</h1>
+        </div>
+        <div id="container" style="width:100%; height:500px;"></div>
+    </t>
+</templates>
