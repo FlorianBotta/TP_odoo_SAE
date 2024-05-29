@@ -40,7 +40,6 @@ export class TradingBeerScreen extends Component {
         containers.appendChild(container);
 
         var data_table = this.rda.trading_beer[0].data_beer;
-
         data_table = eval(data_table)
 
         var table = anychart.data.table();

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
     <t t-name="rda_management.Navbar">
-        <div class="menuitem">
-            <div class="navbar-button main-button cursor-pointer name category-button btn btn-light d-flex flex-column align-items-center justify-content-center category-item p-1 h-100"
-                 t-on-click="() => rda.showScreen('TradingBeerScreen')">
-                <i class="fa fa-beer"></i>
-                Trading Beer</div>
-        </div>
+<!--        <div class="menuitem">-->
+<!--            <div class="navbar-button main-button cursor-pointer name category-button btn btn-light d-flex flex-column align-items-center justify-content-center category-item p-1 h-100"-->
+<!--                 t-on-click="() => rda.showScreen('TradingBeerScreen')">-->
+<!--                <i class="fa fa-beer"></i>-->
+<!--                Trading Beer</div>-->
+<!--        </div>-->
     </t>
 </templates>
