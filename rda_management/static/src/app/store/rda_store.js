@@ -27,10 +27,11 @@ export class RDAStore extends Reactive {
             } catch (error) {
                 console.error("Erreur lors de l'actualisation des données de la bière :", error);
             }
-        }, 5 * 60 * 1000); // 5 minutes
+        }, 5 * 60 * 100);
     }
 
     async load_server_data() {
+        console.log("Chargement des données de la bière...");
         const loadedData = await this.orm.silent.call("rda.management", "load_rda_data", []);
         await this._processData(loadedData);
     }
@@ -38,6 +39,7 @@ export class RDAStore extends Reactive {
 
     async _processData(loadedData) {
         this.trading_beer = loadedData["rda.beer.trading"];
+        this.product_ids = loadedData["product.template"];
     }
 
 

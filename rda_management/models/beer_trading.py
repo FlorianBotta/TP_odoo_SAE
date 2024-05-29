@@ -14,8 +14,10 @@ class BeerTrading(models.Model):
     data_beer = fields.Char(string='Data Beer')
     # last_update = fields.Datetime(string='Last Update', default=datetime.now())
 
-    def _cron_get_beer_trading_data(self):
-        datas = self.get_datas_from_order()
+    @api.model
+    def get_beer_trading_data(self, product_id):
+        new_product_id = self.env['product.template'].search([('id', '=', product_id)], limit=1)
+        datas = self.get_datas_from_order(new_product_id)
         if not datas:
             return
         df = pd.DataFrame(datas)
@@ -55,23 +57,21 @@ class BeerTrading(models.Model):
             beer_trading_id = self.env['rda.beer.trading'].create({'name': 'Beer Trading'}).sudo()
             beer_trading_id.data_beer = result.values.tolist()
 
-        product_id = self.env['product.product'].search([('name', 'ilike', 'mont blanc')], limit=1)
-        if product_id:
-            product_id.list_price = max_price
+        if new_product_id:
+            new_product_id.list_price = max_price
+        return datas
 
-    def get_datas_from_order(self):
-        beer_product_ids = self.env['product.product'].search([('categ_id.name', '=', 'Bière')])
+    def get_datas_from_order(self, product_id):
         order_ids = self.env['pos.order'].search([('state', 'not in', ['cancel', 'draft'])])
-        order_line_ids = self.env['pos.order.line'].search([('product_id', 'in', [beer_product.id for beer_product in beer_product_ids]), ('order_id', 'in', [order.id for order in order_ids])])
+        order_line_ids = self.env['pos.order.line'].search([('product_id', '=', product_id.id), ('order_id', 'in', [order.id for order in order_ids])])
         datas = []
         for line in order_line_ids:
-            if "mont blanc" in line.product_id.name.lower():
-                order = line.order_id
-                datas.append({
-                    "date_order": order.date_order.strftime('%Y-%m-%d %H:%M:%S'),
-                    "product": line.product_id.name,
-                    "qty": line.qty,
-                })
+            order = line.order_id
+            datas.append({
+                "date_order": order.date_order.strftime('%Y-%m-%d %H:%M:%S'),
+                "product": line.product_id.name,
+                "qty": line.qty,
+            })
         return datas
 
 
